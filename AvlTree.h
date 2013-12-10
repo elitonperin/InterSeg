@@ -335,6 +335,6 @@ class AvlTree
 		Distance _distance;
 };
 
-#include "AvlTree.cpp"
+#include "AvlTree.impl"
 
 #endif /* AVLTREE_H_ */

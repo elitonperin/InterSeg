@@ -1,41 +1,72 @@
-/*
- * main.cpp
- *
- *  Created on: 07/12/2013
- *      Author: Eliton
- */
+#include "AvlTree.h"
+#include "Point.h"
 
-#include<stdio.h>
-#include "Reta.h"
+// This program implements the line sweep algorithm
+//
+int main(int argc, char* argv[])
+{
+	AvlTree<Point> t;
 
-int main(){
-	int n;
+	cout << "**************************************************" << endl;
+	cout << "Tree is empty at this point" << endl;
+	t.printTree();
+	cout << "**************************************************" << endl;
 
+	cout << "Waiting for input" << endl;
 
+	// Read in a bunch of points from the standard input
+	//
+	cin.exceptions( ios_base::eofbit | ios_base::failbit | ios_base::badbit );
 
-	scanf("%d", &n);
+	// Read the line segments
+	//
+	for (int i = 1; cin.good(); i++ )
+	{
+		Point p;
 
-	while(n > 0){
-		int qtdRetas;
-		scanf("%d", &qtdRetas);
+		try
+		{
+			// Read in a point from the input
+			//
+			cin >> p;
 
-		Reta retas[qtdRetas];
+			cout << "Read in point " << p << " adding to the tree" << endl;
 
-		for(int i = 0; i < qtdRetas; i++){
-			scanf("%d %d %d %d", &retas[i].inicio.x,
-				&retas[i].inicio.y, &retas[i].final.x, &retas[i].final.y );
+			// Add the point to our tree
+			//
+			t.insert(p);
 		}
-		for(int i = 0; i < qtdRetas; i++){
-			retas[i].print();
+		catch (ios_base::failure& e)
+		{
+			// Most likely we've just hit the end of the file
+			//
+			if ( !cin.eof() )
+			{
+				cerr << e.what() << " on line " << i << endl;
+			}
 		}
-
-		n--;
 	}
+	cout << "Done reading input" << endl;
+	cout << "**************************************************" << endl;
+	t.printTree();
+	cout << "**************************************************" << endl;
 
+	// Perform a range query
+	//
+	vector<Point*> inRange;
 
+	// Our operator< on Point only cares about y values, but we need
+	// the same "types" for comparison
+	//
+	Point min(0, 150, 0);
+	Point max(0, 350, 0);
 
-	return 0;
+	t.rangeQuery(inRange, min, max, false);
+
+	cout << "Printing out points with y-coordinates between " << min.get_y() << " and " << max.get_y() << endl;
+	for (vector<Point*>::const_iterator it = inRange.begin(); it != inRange.end(); it++ )
+	{
+		cout << *(*it) << endl;
+	}
+	cout << "**************************************************" << endl;
 }
-
-
-
